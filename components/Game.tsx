@@ -152,7 +152,7 @@ export const Game: React.FC<GameProps> = ({ onComplete }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-between min-h-screen p-4 max-w-lg mx-auto relative z-10"
+      className="flex flex-col items-center justify-between min-h-screen p-4 max-w-lg mx-auto relative z-10 bg-love-50/80 backdrop-blur-md shadow-xl"
     >
       {gameStatus === 'won' && (
         <Confetti 
@@ -162,14 +162,15 @@ export const Game: React.FC<GameProps> = ({ onComplete }) => {
             numberOfPieces={400} 
             drawShape={drawConfettiShape}
             colors={['#c9184a', '#ff4d6d', '#ffccd5', '#800f2f']}
+            style={{ position: 'fixed', top: 0, left: 0, zIndex: 100 }}
         />
       )}
 
       {/* Header */}
       <div className="w-full flex flex-col items-center mb-4 mt-2">
         <div className="flex justify-between w-full items-center mb-2">
-            <span className="text-love-400 font-bold text-xs uppercase tracking-widest">Level {levelIndex + 1}/{WORDLE_LEVELS.length}</span>
-            <span className="text-love-400 font-bold text-xs uppercase tracking-widest"> Attempts {guesses.length + (gameStatus === 'playing' ? 0 : 0)}/{MAX_ATTEMPTS}</span>
+            <span className="text-love-800 font-bold text-xs uppercase tracking-widest">Level {levelIndex + 1}/{WORDLE_LEVELS.length}</span>
+            <span className="text-love-800 font-bold text-xs uppercase tracking-widest"> Attempts {guesses.length + (gameStatus === 'playing' ? 0 : 0)}/{MAX_ATTEMPTS}</span>
         </div>
         <h2 className="font-serif italic text-love-800 text-2xl md:text-3xl text-center drop-shadow-sm">"{currentLevel.hint}"</h2>
       </div>
@@ -214,7 +215,7 @@ export const Game: React.FC<GameProps> = ({ onComplete }) => {
                   aspect-square flex items-center justify-center text-2xl font-bold rounded-lg border-2
                   ${currentGuess[i] 
                     ? 'border-love-400 bg-love-50 text-love-900 animate-pulse' 
-                    : 'border-love-200 bg-white/50'
+                    : 'border-love-300 bg-white/50'
                   }
                 `}
               >
@@ -228,7 +229,7 @@ export const Game: React.FC<GameProps> = ({ onComplete }) => {
         {[...Array(Math.max(0, MAX_ATTEMPTS - 1 - guesses.length - (gameStatus === 'playing' ? 0 : 1)))].map((_, i) => (
            <div key={`empty-${i}`} className="grid grid-cols-5 gap-2 opacity-50">
              {[...Array(WORD_LENGTH)].map((_, j) => (
-               <div key={j} className="aspect-square rounded-lg border-2 border-love-100 bg-transparent" />
+               <div key={j} className="aspect-square rounded-lg border-2 border-love-200 bg-transparent" />
              ))}
            </div>
         ))}
@@ -241,7 +242,7 @@ export const Game: React.FC<GameProps> = ({ onComplete }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 flex items-center justify-center bg-black/40 z-50 p-4 backdrop-blur-sm"
+            className="absolute inset-0 flex items-center justify-center bg-black/40 z-50 p-4 backdrop-blur-sm rounded-lg"
           >
             <motion.div 
               initial={{ scale: 0.8 }}

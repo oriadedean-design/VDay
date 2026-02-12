@@ -1,4 +1,4 @@
-export type AppStage = 'hero' | 'game' | 'prize-intro' | 'date-selection' | 'final';
+export type AppStage = 'hero' | 'game' | 'word-search' | 'prize-intro' | 'date-selection' | 'final';
 
 export interface WordleLevel {
   word: string;

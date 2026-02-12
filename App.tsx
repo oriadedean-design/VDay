@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Home, ArrowLeft } from 'lucide-react';
 import { Hero } from './components/Hero';
 import { Game } from './components/Game';
+import { WordSearch } from './components/WordSearch';
 import { PrizeIntro } from './components/PrizeIntro';
 import { DateSelection } from './components/DateSelection';
 import { FinalReveal } from './components/FinalReveal';
@@ -23,8 +24,11 @@ const App: React.FC = () => {
       case 'game':
         setStage('hero');
         break;
-      case 'prize-intro':
+      case 'word-search':
         setStage('game');
+        break;
+      case 'prize-intro':
+        setStage('word-search');
         break;
       case 'date-selection':
         setStage('prize-intro');
@@ -78,7 +82,11 @@ const App: React.FC = () => {
         )}
         
         {stage === 'game' && (
-          <Game key="game" onComplete={() => setStage('prize-intro')} />
+          <Game key="game" onComplete={() => setStage('word-search')} />
+        )}
+
+        {stage === 'word-search' && (
+          <WordSearch key="word-search" onComplete={() => setStage('prize-intro')} />
         )}
 
         {stage === 'prize-intro' && (
