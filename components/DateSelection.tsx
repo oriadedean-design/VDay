@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Utensils, Home, Heart } from 'lucide-react';
+import { Utensils, Home, Heart, ChefHat } from 'lucide-react';
 import { DATE_OPTIONS } from '../constants';
 
 interface DateSelectionProps {
@@ -8,13 +8,22 @@ interface DateSelectionProps {
 }
 
 export const DateSelection: React.FC<DateSelectionProps> = ({ onSelect }) => {
-  const [showConfirm, setShowConfirm] = useState(false);
+  // 0: No modal, 1: First confirm, 2: Second confirm
+  const [confirmationStep, setConfirmationStep] = useState(0);
 
   const handleOptionClick = (id: string) => {
     if (id === 'earls') {
-      setShowConfirm(true);
+      setConfirmationStep(1);
     } else {
       onSelect(id);
+    }
+  };
+
+  const handleEarlsNextStep = () => {
+    if (confirmationStep === 1) {
+      setConfirmationStep(2);
+    } else {
+      onSelect('earls');
     }
   };
 
@@ -57,19 +66,20 @@ export const DateSelection: React.FC<DateSelectionProps> = ({ onSelect }) => {
         ))}
       </div>
 
-      <AnimatePresence>
-        {showConfirm && (
+      <AnimatePresence mode="wait">
+        {confirmationStep > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowConfirm(false)}
+            onClick={() => setConfirmationStep(0)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              key={confirmationStep} // Re-render animation on step change
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: -20 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border-4 border-love-200 text-center relative overflow-hidden"
             >
@@ -77,18 +87,32 @@ export const DateSelection: React.FC<DateSelectionProps> = ({ onSelect }) => {
               
               <div className="mb-6 flex justify-center">
                  <div className="bg-rose-100 p-4 rounded-full animate-bounce">
-                    <Heart className="text-rose-500 fill-rose-500" size={48} />
+                    {confirmationStep === 1 ? (
+                        <Heart className="text-rose-500 fill-rose-500" size={48} />
+                    ) : (
+                        <ChefHat className="text-rose-500" size={48} />
+                    )}
                  </div>
               </div>
 
               <h3 className="text-2xl font-serif font-bold text-love-900 mb-4">
-                Are you sure, my love? 🥺
+                {confirmationStep === 1 ? "Are you sure, my love? 🥺" : "Are you really sure? 👨‍🍳"}
               </h3>
               
-              <p className="text-love-700 mb-8 leading-relaxed">
-                While Earls is delicious, a cozy night in implies 
-                <strong> unlimited cuddles</strong>, a movie of your choice, and 
-                Special Massage from Monsieur Dean...
+              <p className="text-love-700 mb-8 leading-relaxed text-lg">
+                {confirmationStep === 1 ? (
+                    <>
+                        While Earls is delicious, a cozy night in implies 
+                        <strong> unlimited cuddles</strong>, a movie of your choice, and 
+                        Special Massage from Monsieur Dean...
+                    </>
+                ) : (
+                    <>
+                        Chef Dean & Monsieur Dean really would like to host you!
+                        <br/>
+                        <span className="text-sm italic mt-2 block opacity-80">(They have prepared a special menu!)</span>
+                    </>
+                )}
               </p>
 
               <div className="flex flex-col gap-3">
@@ -96,15 +120,15 @@ export const DateSelection: React.FC<DateSelectionProps> = ({ onSelect }) => {
                   onClick={() => onSelect('home')}
                   className="w-full bg-love-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-love-700 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
                 >
-                  <Home size={20} />
-                  You convinced me! Let's stay in
+                  {confirmationStep === 1 ? <Home size={20} /> : <ChefHat size={20} />}
+                  {confirmationStep === 1 ? "You convinced me! Let's stay in" : "Okay, Let Chef Dean Cook!"}
                 </button>
                 
                 <button
-                  onClick={() => onSelect('earls')}
+                  onClick={handleEarlsNextStep}
                   className="w-full bg-transparent text-love-400 py-2 text-sm hover:text-love-600 transition-colors"
                 >
-                  I really want Earls though! (Confirm Earls)
+                  {confirmationStep === 1 ? "I really want Earls though!" : "I still want Earls (Final Answer)"}
                 </button>
               </div>
             </motion.div>
